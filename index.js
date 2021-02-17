@@ -1,10 +1,9 @@
 const inquirer = require("inquirer");
-const { Employee, Manager, Engineer } = require("./lib");
+const { Employee, Manager, Engineer, Intern } = require("./lib");
 
-const entry = new Entry();
+// const entry = new Entry();
 
-const promptUser = (list) => {
-  let list_of_users = list || [];
+const promptUser = (list_of_users = []) => {
   inquirer
     .prompt([
       {
@@ -32,7 +31,7 @@ const promptUser = (list) => {
         type: "input",
         name: "github",
         message: "What is their github user name?",
-        when: (answers) => answers.role == "Engineer",
+        when: (answers) => answers.role == "Manager",
       },
       {
         type: "input",
@@ -42,24 +41,26 @@ const promptUser = (list) => {
       },
       {
         type: "input",
-        name: "github",
-        message: "What is their github user name?",
-        when: (answers) => answers.role == "Engineer",
+        name: "school",
+        message: "What is their school?",
+        when: (answers) => answers.role == "Intern",
       },
     ])
     .then((answers) => {
       let new_emp;
-      if (answers.role === "Manager") {
+      if (answers.role == "Manager") {
         new_emp = new Manager(...answers);
         console.log("I'm mr manager!");
-      } else if (answers.role === "Engineer") {
+      } else if (answers.role == "Engineer") {
         new_emp = new Engineer(...answers);
         console.log("Engineer Reporting!");
-      } else if (answers.role === "Intern") {
+      } else if (answers.role == "Intern") {
+        new_emp = new Intern(...answers);
         console.log("Intern here.");
       }
 
       list_of_users.push(new_emp);
+      console.log(list_of_users);
 
       inquirer
         .prompt([
@@ -79,3 +80,7 @@ const promptUser = (list) => {
         });
     });
 };
+promptUser();
+//   .then((answers) => writeFileAsync("index.html", generateHTML(answers)))
+//   .then(() => console.log("Successfully wrote to index.html"))
+//   .catch((err) => console.error(err));
