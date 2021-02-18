@@ -1,4 +1,5 @@
 const inquirer = require("inquirer");
+const fs = require("fs");
 const { Employee, Manager, Engineer, Intern } = require("./lib");
 
 // const entry = new Entry();
@@ -29,8 +30,8 @@ const promptUser = (list_of_users = []) => {
       },
       {
         type: "input",
-        name: "github",
-        message: "What is their github user name?",
+        name: "officeNum",
+        message: "What is their office number?",
         when: (answers) => answers.role == "Manager",
       },
       {
@@ -48,15 +49,21 @@ const promptUser = (list_of_users = []) => {
     ])
     .then((answers) => {
       let new_emp;
-      if (answers.role == "Manager") {
-        new_emp = new Manager(...answers);
-        console.log("I'm mr manager!");
-      } else if (answers.role == "Engineer") {
-        new_emp = new Engineer(...answers);
-        console.log("Engineer Reporting!");
-      } else if (answers.role == "Intern") {
-        new_emp = new Intern(...answers);
-        console.log("Intern here.");
+
+      switch (answers.role) {
+        case "Manager":
+          new_emp = new Manager(...Object.entries(answers));
+          console.log("I'm mr manager!");
+          break;
+        case "Engineer":
+          new_emp = new Engineer(...Object.entries(answers));
+          console.log("Engineer Reporting!");
+          break;
+        case "Intern":
+          new_emp = new Intern(...Object.entries(answers));
+          console.log("Intern here.");
+        default:
+          console.log("cool cool cool");
       }
 
       list_of_users.push(new_emp);
@@ -66,7 +73,7 @@ const promptUser = (list_of_users = []) => {
         .prompt([
           {
             type: "confirm",
-            message: "Do you want to continue",
+            message: "Do you want to add more employees?",
             name: "continue",
           },
         ])
@@ -77,10 +84,8 @@ const promptUser = (list_of_users = []) => {
             // Make the page
             console.log("Done");
           }
-        });
+        })
+        .catch((err) => console.error(err));
     });
 };
 promptUser();
-//   .then((answers) => writeFileAsync("index.html", generateHTML(answers)))
-//   .then(() => console.log("Successfully wrote to index.html"))
-//   .catch((err) => console.error(err));
